@@ -12,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.ui.screens.AuthScreen
 import com.example.ui.screens.DashboardScreen
 import com.example.ui.theme.MyApplicationTheme
@@ -29,7 +30,7 @@ class MainActivity : FragmentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = Color(0xFF0C0E12)
                 ) {
-                    val isUnlocked by vaultViewModel.isUnlocked.collectAsState()
+                    val isUnlocked by vaultViewModel.isUnlocked.collectAsStateWithLifecycle()
 
                     AnimatedContent(
                         targetState = isUnlocked,

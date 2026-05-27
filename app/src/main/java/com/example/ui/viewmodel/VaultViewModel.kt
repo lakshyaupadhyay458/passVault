@@ -57,7 +57,9 @@ class VaultViewModel(application: Application) : AndroidViewModel(application) {
             
             (titleMatches || websiteMatches) && categoryMatches
         }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    }
+        .flowOn(kotlinx.coroutines.Dispatchers.Default)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     fun setSearchQuery(query: String) {
         _searchQuery.value = query

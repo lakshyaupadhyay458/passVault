@@ -22,10 +22,17 @@ object CryptoHelper {
         }
     }
 
+    private var cachedSecretKey: SecretKey? = null
+
+    @Synchronized
     private fun getOrCreateSecretKey(): SecretKey {
+        cachedSecretKey?.let { return it }
         val keyStore = KeyStore.getInstance(PROVIDER).apply { load(null) }
         val existingKey = keyStore.getKey(ALIAS, null) as? SecretKey
-        if (existingKey != null) return existingKey
+        if (existingKey != null) {
+            cachedSecretKey = existingKey
+            return existingKey
+        }
 
         val keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, PROVIDER)
         val spec = KeyGenParameterSpec.Builder(
@@ -37,7 +44,9 @@ object CryptoHelper {
             .setKeySize(256)
             .build()
         keyGenerator.init(spec)
-        return keyGenerator.generateKey()
+        val newKey = keyGenerator.generateKey()
+        cachedSecretKey = newKey
+        return newKey
     }
 
     fun encrypt(plainText: String): EncryptedPayload {

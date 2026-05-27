@@ -37,6 +37,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.data.database.VaultEntry
 import com.example.ui.components.PasswordGeneratorWidget
 import com.example.ui.viewmodel.SyncStatus
@@ -52,13 +53,13 @@ fun DashboardScreen(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-    val allEntries by viewModel.allEntries.collectAsState()
-    val filteredEntries by viewModel.filteredEntries.collectAsState()
-    val searchQuery by viewModel.searchQuery.collectAsState()
-    val selectedCategory by viewModel.selectedCategory.collectAsState()
-    val syncState by viewModel.syncState.collectAsState()
-    val lastSyncTime by viewModel.lastSyncTime.collectAsState()
-    val isAutoImportEnabled by viewModel.isAutoImportEnabled.collectAsState()
+    val allEntries by viewModel.allEntries.collectAsStateWithLifecycle()
+    val filteredEntries by viewModel.filteredEntries.collectAsStateWithLifecycle()
+    val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
+    val selectedCategory by viewModel.selectedCategory.collectAsStateWithLifecycle()
+    val syncState by viewModel.syncState.collectAsStateWithLifecycle()
+    val lastSyncTime by viewModel.lastSyncTime.collectAsStateWithLifecycle()
+    val isAutoImportEnabled by viewModel.isAutoImportEnabled.collectAsStateWithLifecycle()
 
     var activeTab by remember { mutableStateOf("Vault") } // Tabs: "Vault", "Generator", "Sync & Import"
     
@@ -562,7 +563,10 @@ fun VaultTabContent(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     val chunkedList = filteredEntries.chunked(2)
-                    items(chunkedList) { rowItems ->
+                    items(
+                        items = chunkedList,
+                        key = { row -> row.map { it.id }.joinToString("_") }
+                    ) { rowItems ->
                         Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
                             rowItems.forEach { entry ->
                                 Box(modifier = Modifier.weight(1f)) {
