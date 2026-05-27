@@ -1,0 +1,6 @@
+{
+  "name": "PassVault",
+  "description": "AES-256 Encrypted Offline-First Local Password Vault with Biometric Unlock & Simulation Dashboard.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
